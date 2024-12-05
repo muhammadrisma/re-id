@@ -24,14 +24,19 @@ def main():
 
     optimizer = torchreid.optim.build_optimizer(
         model,
+        # optim="adam",
         optim="sgd",
-        lr=0.065,
-        weight_decay=0.0005
+        lr=0.001,
+        weight_decay=0.0005,
+        momentum=0.90 # 0.85 - 0.99
     )
 
     scheduler = torchreid.optim.build_lr_scheduler(
         optimizer,
         lr_scheduler="cosine", # Use cosine annealing
+        stepsize=10
+        # lr_scheduler='multi_step', 
+        # stepsize=[30, 50, 55]
     )
 
     engine = torchreid.engine.ImageSoftmaxEngine(
@@ -40,7 +45,6 @@ def main():
         optimizer=optimizer,
         scheduler=scheduler,
         label_smooth=True,
-        use_gpu=True,
         # early_stopping=True, # add early stoping
         # target_metric ="test_acc" # monitor train loss
     )
@@ -51,7 +55,7 @@ def main():
 
     engine.run(
         save_dir="log/osnet_ibn_x1_0",
-        max_epoch=300,
+        max_epoch=60,
         eval_freq=10,
         print_freq=10,
         test_only=False,

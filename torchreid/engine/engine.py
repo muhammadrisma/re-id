@@ -32,7 +32,7 @@ class Engine(object):
         self.use_gpu = (torch.cuda.is_available() and use_gpu)
         self.writer = None
         self.epoch = 0
-
+        self.early_stopping=False,
         self.model = None
         self.optimizer = None
         self.scheduler = None
@@ -82,7 +82,8 @@ class Engine(object):
                     'epoch': epoch + 1,
                     'rank1': rank1,
                     'optimizer': self._optims[name].state_dict(),
-                    'scheduler': self._scheds[name].state_dict()
+                    'scheduler': self._scheds[name].state_dict(),
+                    
                 },
                 osp.join(save_dir, name),
                 is_best=is_best
