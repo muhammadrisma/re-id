@@ -4,8 +4,9 @@ import os.path as osp
 import argparse
 import torch
 import torch.nn as nn
-
 import torchreid
+
+
 from torchreid.utils import (
     Logger, check_isfile, set_random_seed, collect_env_info,
     resume_from_checkpoint, load_pretrained_weights, compute_model_complexity

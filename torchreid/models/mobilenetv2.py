@@ -7,11 +7,13 @@ __all__ = ['mobilenetv2_x1_0', 'mobilenetv2_x1_4']
 
 model_urls = {
     # 1.0: top-1 71.3
+    # Updated current link
     'mobilenetv2_x1_0':
-    'https://mega.nz/#!NKp2wAIA!1NH1pbNzY_M2hVk_hdsxNM1NUOWvvGPHhaNr-fASF6c',
+    'https://drive.google.com/file/d/1K7_CZE_L_Tf-BRY6_vVm0G-0ZKjVWh3R',
     # 1.4: top-1 73.9
+    # Updated current link
     'mobilenetv2_x1_4':
-    'https://mega.nz/#!RGhgEIwS!xN2s2ZdyqI6vQ3EwgmRXLEW3khr9tpXg96G9SUJugGk',
+    'https://drive.google.com/file/d/10c0ToIGIVI0QZTx284nJe8QfSJl5bIta',
 }
 
 

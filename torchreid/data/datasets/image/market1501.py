@@ -29,7 +29,7 @@ class Market1501(ImageDataset):
     """
 
     _junk_pids = [0, -1]
-    dataset_dir = r'C:\\reid\deep-person-reid\\reid-data\\market1501'
+    dataset_dir = 'market1501'
 
     def __init__(self, root='', market1501_500k=False, **kwargs):
         # Use the fixed dataset path
