@@ -10,7 +10,7 @@ def main():
         width=128,
         batch_size_train=64,
         batch_size_test=100,
-        transforms=["random_flip", "random_crop", "random_patch", "color_jitter"]
+        transforms=["random_flip", "random_crop", "random_patch"]
     )
 
     model = torchreid.models.build_model(
@@ -24,15 +24,14 @@ def main():
 
     optimizer = torchreid.optim.build_optimizer(
         model,
-        optim="adam",
-        lr=0.001,
-        
+        optim="sgd",
+        lr=0.065,
+        weight_decay=0.0005
     )
 
     scheduler = torchreid.optim.build_lr_scheduler(
         optimizer,
-        lr_scheduler="multi_step", 
-        stepsize=[30, 50, 55]
+        lr_scheduler="cosine", # Use cosine annealing
     )
 
     engine = torchreid.engine.ImageSoftmaxEngine(
@@ -41,6 +40,9 @@ def main():
         optimizer=optimizer,
         scheduler=scheduler,
         label_smooth=True,
+        use_gpu=True,
+        # early_stopping=True, # add early stoping
+        # target_metric ="test_acc" # monitor train loss
     )
 
     # Evaluate on Test data using trained weight
@@ -49,7 +51,7 @@ def main():
 
     engine.run(
         save_dir="log/osnet_ibn_x1_0",
-        max_epoch=60,
+        max_epoch=300,
         eval_freq=10,
         print_freq=10,
         test_only=False,
