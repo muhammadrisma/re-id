@@ -14,7 +14,7 @@ def main():
     )
     
     model = torchreid.models.build_model(
-        name="osnet_ibn_x1_0",
+        name="osnet_x1_0",
         num_classes=datamanager.num_train_pids,
         loss="softmax",
         pretrained=True
@@ -27,6 +27,7 @@ def main():
         optim="sgd",
         lr=0.065,
         weight_decay=0.0005,
+        momentum=0.85
     )
 
     scheduler = torchreid.optim.build_lr_scheduler(
@@ -44,12 +45,12 @@ def main():
     )
     
     engine.run(
-        save_dir="log\osnet_ibn_x1_0",
-        max_epoch=350,
+        save_dir="log\osnet_x1_0",
+        max_epoch=60,
         eval_freq=10,
         print_freq=10,
-        test_only=False,
-        visrank=False,
+        test_only=True,
+        visrank=True,
     )
 
 
