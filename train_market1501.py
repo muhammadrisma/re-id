@@ -1,6 +1,5 @@
 import torchreid
 import optuna
-import time
 
 def objective(trial):
     height = 256
