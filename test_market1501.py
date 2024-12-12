@@ -49,8 +49,8 @@ def main():
         max_epoch=60,
         eval_freq=10,
         print_freq=10,
-        test_only=True,
-        visrank=True,
+        test_only=False,
+        visrank=False,
     )
 
 
