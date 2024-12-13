@@ -6,11 +6,11 @@ def main():
         root="reid-data",
         sources="market1501",
         targets="market1501",
-        height=160,
-        width=64,
+        height=256,
+        width=128,
         batch_size_train=64,
         batch_size_test=100,
-        transforms=["random_flip", "random_crop", "random_patch"], 
+        transforms=["random_flip", "random_crop", "random_patch", "color_jitter"], 
     )
     
     model = torchreid.models.build_model(
@@ -25,7 +25,7 @@ def main():
     optimizer = torchreid.optim.build_optimizer(
         model,
         optim="sgd",
-        lr=0.065,
+        lr=0.065, 
         weight_decay=0.0005,
         momentum=0.85
     )
@@ -45,7 +45,7 @@ def main():
     )
     
     engine.run(
-        save_dir="log\osnet_x1_0",
+        save_dir="log\osnet_x1_0_finetune",
         max_epoch=60,
         eval_freq=10,
         print_freq=10,
