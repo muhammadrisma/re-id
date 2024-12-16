@@ -9,7 +9,7 @@ from torch.nn.functional import cosine_similarity
 def main():
     # Load pretrained model
     model = build_model(name='osnet_x1_0', num_classes=751, pretrained=False)
-    checkpoint = torch.load('model\osnet_x1_0.tar-60', map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+    checkpoint = torch.load('model/osnet_x1_0.tar-60', map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     model.load_state_dict(checkpoint['state_dict'])
     model.eval()
 
@@ -30,6 +30,7 @@ def main():
     # Load reference images
     def load_reference_images(reference_folder, target_size):
         reference_features = {}
+        reference_images = {}
         for filename in os.listdir(reference_folder):
             filepath = os.path.join(reference_folder, filename)
             image = cv2.imread(filepath)
@@ -38,13 +39,14 @@ def main():
                 with torch.no_grad():
                     feature = model(processed_image).squeeze()
                 reference_features[filename] = feature
-        return reference_features
+                reference_images[filename] = cv2.resize(image, (128, 256))  # Resize for display
+        return reference_features, reference_images
 
     # Initialize webcam
     cap = cv2.VideoCapture(0)
     reference_folder = 'data_test'
     target_size = (256, 128)  # Model input size for OSNet
-    reference_features = load_reference_images(reference_folder, target_size)
+    reference_features, reference_images = load_reference_images(reference_folder, target_size)
 
     MIN_CONFIDENCE = 0.7
 
@@ -58,7 +60,7 @@ def main():
             query_feature = model(processed_frame).squeeze()
 
         # Compare with reference images
-        best_match = "No match"
+        best_match = None
         highest_similarity = -float('inf')
 
         for filename, feature in reference_features.items():
@@ -68,14 +70,26 @@ def main():
                 highest_similarity = similarity
 
         # Display result if above minimum confidence
+        result_text = 'No confident match found'
+        matched_image = None
+
         if highest_similarity >= MIN_CONFIDENCE:
             result_text = f'Best Match: {best_match} ({highest_similarity:.2f})'
-        else:
-            result_text = 'No confident match found'
+            matched_image = reference_images[best_match]
 
+        # Overlay text on the live frame
         cv2.putText(frame, result_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+        # If a match is found, display the matched image
+        if matched_image is not None:
+            # Create a side-by-side view of the live frame and matched reference image
+            matched_image_resized = cv2.resize(matched_image, (frame.shape[1] // 4, frame.shape[0] // 2))
+            frame[:matched_image_resized.shape[0], -matched_image_resized.shape[1]:] = matched_image_resized
+
+        # Display the live feed
         cv2.imshow('Image Similarity Search', frame)
 
+        # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
